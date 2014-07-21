@@ -1,0 +1,8 @@
+Latex - Use LaTeXiT
+a^2 + b^2 = c^2
+c = \sqrt{a^2 + b^2}
+\sqrt{(x_1 - x_2)^2 + (y_1 - y_2)^2}
+
+Syntax highlighting
+brew install highlight
+pbpaste | highlight --style=breeze --syntax=py -O rtf collab_filtering_rec.py | pbcopy

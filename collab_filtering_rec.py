@@ -2,8 +2,9 @@
 
 # Store user ratings
 user_ratings = {"Elissa": {"Leaf Shorts": 5, "Floral Shorts": 5},
-                "Erin": {"Leaf Shorts": 2, "Floral Shorts": 5},
-                "Stella": {"Leaf Shorts": 4, "Floral Shorts": 1}
+                "Erin": {"Leaf Shorts": 2, "Floral Shorts": 5, "Jungle Shorts": 4},
+                "Stella": {"Leaf Shorts": 4, "Floral Shorts": 1},
+                "Justin": {"Leaf Shorts": 1, "Floral Shorts": 4}
                 }
 
 # Print Stella's ratings.
@@ -25,35 +26,50 @@ print "Erin's review of the Leaf Shorts: " + my_humble_opinion
 
 """ Let's get serious. """
 
-def compute_manhattan_distance(user_rating1, user_rating2): 
+def compute_distance(user1_ratings, user2_ratings): 
   """ 
-      This function computes the Manhattan distance between two user's 
+      This function computes the distance between two user's 
       ratings.  Both arguments should be dictionaries keyed on users, 
       and items.
   """
-  distance = 0
-  for key in user_rating1:
-    if key in user_rating2:
-      distance += abs(user_rating1[key] - user_rating2[key])
-  return distance
+  distances = []
+  for key in user1_ratings:
+    if key in user2_ratings:
+      distances.append((user1_ratings[key] - user2_ratings[key]) ** 2)
+  total_distance = round(sum(distances) ** 0.5, 2)
+  return total_distance
 
-def find_nearest_neighbor(username, users):
+def find_nearest_neighbors(username, user_ratings):
   """ 
+      Returns the list of neighbors, ordered by distance.  
+      Call like this: find_nearest_neighbor('Erin', user_ratings)
   """
   distances = []
-  for user in users:
+  for user in user_ratings:
     if user != username:
-      distance = compute_manhattan_distance(users[user], users[username])
+      distance = compute_distance(user_ratings[user], user_ratings[username])
       distances.append((distance, user))
   distances.sort()
-  return distances[0]
-      
-def get_recommendations(username, users):
+  return distances
+
+def get_recommendations(username, user_ratings):
   """
+      Return a list of recommendations.
   """
-  nearest_user = find_nearest_neighbor(username, users)
+  nearest_users = find_nearest_neighbors(username, user_ratings)
   recommendations = []
 
-  neighbor_ratings = user[nearest_user]
+  # Input user's ratings
+  ratings = user_ratings[username]
 
+  for neighbor in nearest_users:
+    neighbor_name = neighbor[1]
+    for item in user_ratings[neighbor_name]:
+      if not item in ratings:
+        recommendations.append((item, user_ratings[neighbor_name][item]))
 
+  return sorted(recommendations, 
+                key = lambda personTuple: personTuple[1],
+                reverse = True)
+
+print get_recommendations("Justin", user_ratings)
